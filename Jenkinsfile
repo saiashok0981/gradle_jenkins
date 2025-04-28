@@ -1,10 +1,11 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
 
     tools {
-        gradle 'Gradle'  // Ensure this matches the name configured in Jenkins
-        jdk 'JDK'
+        gradle 'Gradle'  // Ensure this matches your Jenkins Gradle tool name
+        jdk 'JDK'        // Ensure this matches your Jenkins JDK tool name
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -12,27 +13,29 @@ pipeline {
             }
         }
 
+        stage('Set Permissions') {
+            steps {
+                sh 'chmod +x gradlew'
+            }
+        }
+
         stage('Build') {
             steps {
-                sh 'gradle build'  // Run Maven build
+                sh './gradlew build'  // Use the Gradle wrapper
             }
         }
 
-       stage('Test') {
-           steps {
-               sh 'gradle test'  // Run unit tests
-           }
+        stage('Test') {
+            steps {
+                sh './gradlew test'
+            }
         }
 
-              
         stage('Run Application') {
             steps {
-                // Start the JAR application
-                sh 'gradle run'
+                sh './gradlew run'
             }
         }
-
-        
     }
 
     post {
