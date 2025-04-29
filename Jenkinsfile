@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         gradle 'Gradle'   // Ensure this name matches what's configured in Jenkins tools
-        jdk 'JDK 11'      // Ensure this matches a JDK 11 installation in Jenkins
+        jdk 'JDK'      // Ensure this matches a JDK 11 installation in Jenkins
     }
 
     stages {
@@ -13,39 +13,33 @@ pipeline {
             }
         }
 
-        stage('Set Permissions') {
-            steps {
-                sh 'chmod +x gradlew'
-            }
-        }
-
         stage('Build') {
             steps {
-                sh './gradlew clean build'
+                sh 'gradle clean build'
             }
         }
 
         stage('Test') {
             steps {
-                sh './gradlew test'
+                sh 'gradle test'
             }
         }
 
         stage('Run Application') {
             steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    sh './gradlew run'
-                }
+                
+                    sh 'gradle run'
+                
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build and deployment successful!'
+            echo 'Build and deployment successful!'
         }
         failure {
-            echo '❌ Build failed!'
+            echo 'Build failed!'
         }
     }
 }
