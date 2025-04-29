@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        gradle 'Gradle'  // Ensure this matches your Jenkins Gradle tool name
-        jdk 'JDK'        // Ensure this matches your Jenkins JDK tool name
+        gradle 'Gradle'   // Ensure this name matches what's configured in Jenkins tools
+        jdk 'JDK 11'      // Ensure this matches a JDK 11 installation in Jenkins
     }
 
     stages {
@@ -21,7 +21,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew build'  // Use the Gradle wrapper
+                sh './gradlew clean build'
             }
         }
 
@@ -33,17 +33,19 @@ pipeline {
 
         stage('Run Application') {
             steps {
-                sh './gradlew run'
+                timeout(time: 2, unit: 'MINUTES') {
+                    sh './gradlew run'
+                }
             }
         }
     }
 
     post {
         success {
-            echo 'Build and deployment successful!'
+            echo '✅ Build and deployment successful!'
         }
         failure {
-            echo 'Build failed!'
+            echo '❌ Build failed!'
         }
     }
 }
